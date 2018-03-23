@@ -1,0 +1,29 @@
+language: python
+python:
+- '3.6'
+services:
+- docker
+env:
+- TORTUGA_BUILD_DOCKER="true"
+before_install:
+- docker pull puppet/puppet-agent
+install:
+- pip install tox
+- git clone https://github.com/UnivaCorporation/tortuga.git tortuga-base
+- cd tortuga-base/
+- pip install -r requirements.txt
+- paver build
+- cd ../
+- build-kit
+script:
+- echo "Done"
+deploy:
+  provider: releases
+  api_key:
+    secure: LZdXi9QEB4YmQpuK5tlzw60CBQZzQM0zdzZSA98ZkcJjHLXj7nk+/ch2OrL2oU8a9ZT6UlLFK1WQkh16HzAaFgYR5Dgqukkel0mSJZOYYBoje957TlzOGYL+43rF3dptnkcrgzLCHZLtd1Y26//yFBvx1ylhD3XUIFMWyfyVTF/fQhe+3NmrdSo6ULCDnw8OkqHm+U5Wxm0uojrXy7Lx/8fTqmDrsgpX1e5IbibvDYWBK9PkLwPXU2XHe0GMVVDM/L3t/zs0KlGhbpEFovbQaaum9n2ZqIHvjdNhOEeJ1WjWsAgP6Kn1Zq2gRySlA894d7ngREKwBwu5pwy7y/HNL5ZShv7yGiTKYf4PYl69h3J8VAzts06Q+WBB9B/n0KW02eIvYspKZzkSeoLsluMwZST6VNJ2JxGt1xRGUft6CxEQLTZpDd4UwrD52c2f/Bxqyetf+oj2e/l7kbxa64DKiGLnFYmZXMTmEFbO+v0I4pdfRhTCtjpM47cuNxtZk6FNUFciVxjLa1CiSjZq2DsBrT+YFpj28Me/aMfnB7erQLVK7tKpFM03oDrFJ89xbfNz5vkuXwnRM38ZywwhDHJqYfdeiRsHXjDFK3iWJfCCym84G3bgkgFtf2/LpPmPwszvV5mptSKercdFLMWYf0JAvLTU/SjkDLXE+3bRza8CTTw=
+  file_glob: true
+  file: "dist/kit-openstackadapter*.tar.bz2"
+  skip_cleanup: true
+  on:
+    all_branches: true
+    tags: true
